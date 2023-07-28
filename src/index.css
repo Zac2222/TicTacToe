@@ -11,3 +11,9 @@ body{
   display: flex;
   justify-content: center;
 }
+
+.status{
+  display: flex;
+  justify-content: center;
+  font-size: 60px;
+}

@@ -1,6 +1,6 @@
 Zac Rice
 
-Date Revised: 7/26/2023
+Date Revised: 7/27/2023
 
 Title: TicTacToe
 
@@ -12,4 +12,4 @@ Peer Reviewer:
 
 Comment: what
 
-tutorial section left off on: Why immutability is important
+tutorial section left off on: Lifting state up, again
