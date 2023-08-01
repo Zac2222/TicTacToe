@@ -5,14 +5,20 @@ interface SquareProps{
     onSquareClick?: React.MouseEventHandler<HTMLButtonElement>; //sets it to just work as an onclick button default.
 }
 
+interface BoardProps {
+    xIsNext: boolean;
+    squares: (string | null)[];
+    onPlay: (nextSquares: (string | null)[]) => void;
+}
+
 function Square({value,onSquareClick}: SquareProps)
 {
     return <button className='square' onClick={onSquareClick}>{value}</button>
 }
 
-const Board = () => {
-    const [xIsNext, setXIsNext] = useState(true)
-    const [squares, setSquares] = useState<(string | null)[]>(Array(9).fill(null)); //creates an empty array with 9 empty elements 
+function Board({xIsNext,squares,onPlay}:BoardProps) {
+    // const [xIsNext, setXIsNext] = useState(true)
+    // const [squares, setSquares] = useState<(string | null)[]>(Array(9).fill(null)); 
 
     function handleClick(i: number)
     {
@@ -30,8 +36,7 @@ const Board = () => {
         {
             nextSquares[i] = 'O'
         }
-        setSquares(nextSquares);
-        setXIsNext(!xIsNext)
+        onPlay(nextSquares)
     }
 
     const winner = calulateWinner(squares);
@@ -70,15 +75,42 @@ const Board = () => {
   )
 }
 
-function Game()
-{
-    const [xIsNext, setXIsNext] = useState(true)
-    const [history, setHisory] = useState<(string | null)[]>(Array(9).fill(null));
-    const currentSquares = history[history.length - 1]
+const Game = () => {
 
-    function handlePlay(nextSquares){
+    type SquaresArray = (string | null)[]
 
+    // const [xIsNext, setXIsNext] = useState(true)
+    const [history, setHistory] = useState<SquaresArray[]>([Array(9).fill(null)]);
+    const [currentMove, setCurrentMove] = useState(0)
+    const xIsNext = currentMove % 2 === 0;
+    const currentSquares = history[currentMove]
+
+    function handlePlay(nextSquares: SquaresArray){ 
+        const nextHistory = [...history.slice(0, currentMove + 1), nextSquares];
+        setHistory(nextHistory);
+        setCurrentMove(nextHistory.length - 1);
     }
+
+    function jumpTo(nextMove: (number)){ //RIGHT HERE, HERE IS WHERE YOU FUCKED UP COME MAKE SURE ITS OKAY. STUPID
+        setCurrentMove(nextMove);
+    }
+
+    const moves = history.map((squares, move) =>{
+        let description = '';
+        if(move > 0)
+        {
+            description = 'Go to move #' + move;
+        }
+        else
+        {
+            description = 'Go to game start';
+        }
+        return(
+            <li key={move}>
+                <button onClick={() => jumpTo(move)}>{description}</button>
+            </li>
+        )
+    })
 
     return(
         <div className='game'>
@@ -86,7 +118,7 @@ function Game()
                 <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay}/>
             </div>
             <div className='game-info'>
-                <ol></ol>
+                <ol>{moves}</ol>
             </div>
         </div>
     )
