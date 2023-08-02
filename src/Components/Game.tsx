@@ -21,6 +21,7 @@ function Board({xIsNext,squares,onPlay}:BoardProps) {
     // const [xIsNext, setXIsNext] = useState(true)
     // const [squares, setSquares] = useState<(string | null)[]>(Array(9).fill(null)); 
     const [colors, setColors] = useState<string[]>(Array(9).fill('white'));
+    
 
     function handleClick(i: number)
     {
