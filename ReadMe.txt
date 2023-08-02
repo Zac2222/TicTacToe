@@ -8,8 +8,8 @@ Description: Remake a tictactoe game with react type script
 
 git link: https://github.com/Zac2222/TicTacToe-with-react-typescript
 
-Peer Reviewer: 
+Peer Reviewer: Patrick
 
-Comment: what
+Comment: fantastic lets go (in response the the color changing)
 
 tutorial section left off on: Lifting state up, again
