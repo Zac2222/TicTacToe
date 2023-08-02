@@ -16,4 +16,17 @@ body{
   display: flex;
   justify-content: center;
   font-size: 60px;
+  margin-top: 160px;
+}
+
+.game-info{
+  display: flex;
+  justify-content: center;
+}
+
+body.winner-x{
+  background-color: blue;
+}
+body.winner-o{
+  background-color: violet;
 }
