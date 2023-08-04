@@ -3,21 +3,21 @@ import React, { useState } from 'react'
 interface SquareProps{
     value: string | null;
     color: string;
-    onSquareClick?: React.MouseEventHandler<HTMLButtonElement>; //sets it to just work as an onclick button default.
+    onSquareClick?: React.MouseEventHandler<HTMLButtonElement>; //button click handler
 }
 
 interface BoardProps {
     xIsNext: boolean;
-    squares: (string | null)[];
-    onPlay: (nextSquares: (string | null)[]) => void;
+    squares: (string | null)[]; //array to keep track of the board
+    onPlay: (nextSquares: (string | null)[]) => void; //handler for when move is made
 }
 
-function Square({value,color,onSquareClick}: SquareProps)
+function Square({value,color,onSquareClick}: SquareProps) //responsible for keeping track of each square on the board
 {
     return <button className='square' style={{backgroundColor: color}} onClick={onSquareClick}>{value}</button>
 }
 
-function Board({xIsNext,squares,onPlay}:BoardProps) {
+function Board({xIsNext,squares,onPlay}:BoardProps) { //gameboard, handles clicks and stuff
     // const [xIsNext, setXIsNext] = useState(true)
     // const [squares, setSquares] = useState<(string | null)[]>(Array(9).fill(null)); 
     const [colors, setColors] = useState<string[]>(Array(9).fill('white'));
@@ -25,13 +25,15 @@ function Board({xIsNext,squares,onPlay}:BoardProps) {
 
     function handleClick(i: number)
     {
-        if(squares[i] || calulateWinner(squares))
+        if(squares[i] || calulateWinner(squares)) 
         {
             return;
         }
 
-        const nextSquares = squares.slice();
+        //create copies of these arrays to copy and change their states
+        const nextSquares = squares.slice(); 
         const nextColors = colors.slice();
+
         if(xIsNext)
         {
             nextSquares[i] = 'X';
@@ -42,8 +44,8 @@ function Board({xIsNext,squares,onPlay}:BoardProps) {
             nextSquares[i] = 'O'
             nextColors[i] = 'violet';
         }
-        onPlay(nextSquares)
-        setColors(nextColors);
+        onPlay(nextSquares) //update the state of each square as its clicked
+        setColors(nextColors); //changes colors of squares on the board
     }
 
     const winner = calulateWinner(squares);
@@ -51,7 +53,7 @@ function Board({xIsNext,squares,onPlay}:BoardProps) {
     if(winner === 'X')
     {
         status = 'Winner: ' + winner;
-        document.body.classList.add('winner-x');
+        document.body.classList.add('winner-x'); //changes the classname so it will then apply to the correct css based on the winner to change background
     }
     else if(winner === 'O')
     {
@@ -61,7 +63,7 @@ function Board({xIsNext,squares,onPlay}:BoardProps) {
     else
     {
         status = 'Next player: ' + (xIsNext ? 'X' : 'O')
-        document.body.classList.remove('winner-x');
+        document.body.classList.remove('winner-x'); //removes classname to change board background back at the end, or do nothing if there is no winner yet
         document.body.classList.remove('winner-o');
     }
 
@@ -92,24 +94,30 @@ function Board({xIsNext,squares,onPlay}:BoardProps) {
 
 const Game = () => {
 
-    type SquaresArray = (string | null)[]
+    type SquaresArray = (string | null)[] 
 
     // const [xIsNext, setXIsNext] = useState(true)
+    
+    //track history to be keep track of the array after each move in order to be able to go back moves later
     const [history, setHistory] = useState<SquaresArray[]>([Array(9).fill(null)]);
     const [currentMove, setCurrentMove] = useState(0)
-    const xIsNext = currentMove % 2 === 0;
+
+    const xIsNext = currentMove % 2 === 0; //whos move is it?
     const currentSquares = history[currentMove]
 
     function handlePlay(nextSquares: SquaresArray){ 
+        //create new history with each move played and updates the previous moves tab
         const nextHistory = [...history.slice(0, currentMove + 1), nextSquares];
         setHistory(nextHistory);
         setCurrentMove(nextHistory.length - 1);
     }
 
+    //handles actually going back to previous moves when the button is clicked
     function jumpTo(nextMove: (number)){ 
         setCurrentMove(nextMove);
     }
 
+    //displays past moves as usable buttons to be used with the jumpTo function
     const moves = history.map((squares, move) =>{
         let description = '';
         if(move > 0)
@@ -145,7 +153,7 @@ const Game = () => {
 
 function calulateWinner(squares: (string | null)[])
 {
-    const lines = [
+    const lines = [ //list every 3 square combination to equal a victory.
         [0, 1, 2],
         [3, 4, 5],
         [6, 7, 8],
